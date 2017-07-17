@@ -1,0 +1,112 @@
+apply plugin: 'com.android.application'
+apply from: "config.gradle"
+apply from: "mvplib.gradle"
+
+def cfg = ext.configuration
+
+android {
+    compileSdkVersion cfg.compileVersion
+    buildToolsVersion cfg.buildToolsVersion
+    defaultConfig {
+        applicationId cfg.package
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        resConfig "zh"
+        buildConfigField "String", "APP_URL_MAIN", cfg.app_url_debug
+        buildConfigField "String", "APP_URL_FTP", cfg.app_url_ftp_debug
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        config {
+            storeFile file(cfg.key_store_file)
+            storePassword cfg.key_store_pwd
+            keyAlias cfg.key_alias
+            keyPassword cfg.key_pwd
+        }
+    }
+    buildTypes {
+        release {
+            debuggable false
+            //release时使用release签名
+            signingConfig signingConfigs.config
+            //Zip代码压缩优化
+            zipAlignEnabled true
+            //移除无用资源
+            shrinkResources true
+            //代码混淆
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "APP_URL_MAIN", "\"${cfg.app_url_release}\""
+            buildConfigField "String", "APP_URL_FTP", "\"${cfg.app_url_ftp_release}\""
+        }
+        debug {
+            debuggable true
+            //debug时使用release签名
+            signingConfig signingConfigs.config
+            //代码混淆
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "APP_URL_MAIN", "\"${cfg.app_url_debug}\""
+            buildConfigField "String", "APP_URL_FTP", "\"${cfg.app_url_ftp_debug}\""
+        }
+    }
+
+    productFlavors {
+        gankio {
+            applicationId 'cn.zengcanxiang.gankio'
+            minSdkVersion 21
+            resValue "string", "app_name", "gank即食"
+            buildConfigField "String", "APP_URL_GANKIO", "\"${cfg.app_url_gankIo}\""
+        }
+    }
+    //运行时构建脚本
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                //这里修改apk文件名
+                def fileName;
+                if (variant.buildType.name.contains("debug")) {
+                    variant.mergedFlavor.versionCode = cfg.debug_version_code;
+                    variant.mergedFlavor.versionName = cfg.debug_version_name;
+                    fileName = "app-${variant.mergedFlavor.versionName}-${variant.buildType.name}" +
+                            "-${variant.flavorName}.apk"
+                } else {
+                    variant.mergedFlavor.versionCode = cfg.debug_version_code;
+                    variant.mergedFlavor.versionName = cfg.release_version_name;
+                    fileName = "app-${variant.mergedFlavor.versionName}.apk"
+                }
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    testCompile 'junit:junit:4.12'
+    //布局状态
+    compile 'am.widget:stateframelayout:2.0.2'
+    //数据库操作
+    compile "org.litepal.android:core:1.5.0"
+    //banner
+    compile 'com.youth.banner:banner:1.4.9'
+    //debug查看本地数据库
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+    compile("me.majiajie:pager-bottom-tab-strip:2.1.0") {
+        exclude group: 'com.android.support'
+    }
+    //加载dialog
+    compile 'com.github.d-max:spots-dialog:0.7@aar'
+    //图片展示相关
+    gankioCompile 'com.commit451:PhotoView:1.2.4'
+    //搜索框
+    gankioCompile 'br.com.mauker.materialsearchview:materialsearchview:1.2.2'
+}

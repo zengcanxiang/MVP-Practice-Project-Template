@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="title_back" type="id" />
+    <item name="ig_title" type="id" />
+    <item name="title_menu" type="id" />
+    <item name="state_layout" type="id" />
+</resources>

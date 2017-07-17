@@ -1,0 +1,67 @@
+//对常用的第三方包统一管理
+apply plugin: 'com.neenbedankt.android-apt'
+apt {
+    arguments {
+        eventBusIndex "cn.zengcanxiang.MyEventBusIndex"
+    }
+}
+ext {
+    libraries = [
+            glide                       : "3.7.0",
+            glide_okhttp3               : "1.4.0@aar",
+            eventBus                    : "3.0.0",
+            eventBus_annotation         : "3.0.1",
+            logger                      : "1.8",
+            tkrefreshlayout             : "1.0.7",
+            translucentbar              : "0.7.0",
+            sldinglayout                : "0.9.0",
+            Toasty                      : "1.2.5",
+            baseAdapter                 : "1.4.9",
+            retrofit2                   : "2.3.0",
+            fastjson                    : "1.1.58.android",
+            retrofit2_converter_fastjson: "2.1.0",
+            retrofit2_converter_scalars : "2.3.0",
+            crash                       : "1.5.0",
+            agentweb                    : "1.2.3"
+
+    ]
+
+}
+def libs = ext.libraries
+dependencies {
+    //fastJson解析retrofit结果
+    compile "org.ligboy.retrofit2:converter-fastjson-android:${libs.retrofit2_converter_fastjson}"
+    compile "com.alibaba:fastjson:${libs.fastjson}"
+    //String解析retrofit结果
+    compile "com.squareup.retrofit2:converter-scalars:${libs.retrofit2_converter_scalars}"
+    //retrofit
+    compile "com.squareup.retrofit2:retrofit:${libs.retrofit2}"
+
+    //图片加载
+    compile "com.github.bumptech.glide:glide:${libs.glide}"
+    compile "com.github.bumptech.glide:okhttp3-integration:${libs.glide_okhttp3}"
+    //事件总线
+    compile "org.greenrobot:eventbus:${libs.eventBus}"
+    apt "org.greenrobot:eventbus-annotation-processor:${libs.eventBus_annotation}"
+    //下拉刷新
+    compile("com.lcodecorex:tkrefreshlayout:${libs.tkrefreshlayout}") {
+        exclude group: "com.android.support"
+    }
+    //崩溃捕捉
+    compile "cat.ereza:customactivityoncrash:${libs.crash}"
+    //状态栏design化
+    compile "com.kelin.translucentbar:library:${libs.translucentbar}"
+    //回弹
+    compile "homhomlin.lib:sldinglayout:${libs.sldinglayout}"
+    //日志工具
+    compile "com.orhanobut:logger:${libs.logger}"
+    //Toast
+    compile("com.github.GrenderG:Toasty:${libs.Toasty}") {
+        exclude group: "com.android.support"
+    }
+    //adapter
+    compile "com.zengcanxiang.baseAdapter:baseadapter:${libs.baseAdapter}"
+    //webview
+    compile "com.just.agentweb:agentweb:${libs.agentweb}"
+}
+

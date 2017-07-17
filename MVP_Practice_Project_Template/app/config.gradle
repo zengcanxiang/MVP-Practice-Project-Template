@@ -1,0 +1,24 @@
+/**配置文件*/
+ext {
+    configuration = [
+            package             : "cn.zengcanxiang.mvp_practice_project_template",
+            buildToolsVersion   : "25.0.2",     // 编译工具版本
+            compileVersion      : 25,           // 编译代码的SDK版本
+            minSdk              : 16,           // 支持最小的SDK版本(可限制安装)
+            targetSdk           : 23,           // 支持最高的SDK版本(实质是告诉系统我测试到了多少版本的SDK，保持这个版本以下的API，不支持最新的API变化)
+            debug_version_code  : 1,                                // 测试版本code
+            debug_version_name  : "1.0.0",                          // 测试版本name
+            release_version_code: 1,                                // 正式版本code
+            release_version_name: "1.0.0",                          // 正式版本name
+            app_url_release     : "",                               // 接口正式服务器地址
+            app_url_debug       : "",                               // 接口测试服务器地址
+            app_url_ftp_release : "",                               // FTP正式服务器地址
+            app_url_ftp_debug   : "",                               // FTP测试服务器地址
+            app_url_gankIo      : "http://gank.io/",                // GankIo域名地址
+            key_store_file      : "KeyStore",                       // 签名文件路径
+            key_alias           : "anekey",
+            key_pwd             : "aneane",
+            key_store_pwd       : "aneane",
+    ]
+}
+
