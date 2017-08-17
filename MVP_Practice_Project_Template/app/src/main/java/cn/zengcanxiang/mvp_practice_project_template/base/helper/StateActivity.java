@@ -2,6 +2,7 @@ package cn.zengcanxiang.mvp_practice_project_template.base.helper;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.design.widget.AppBarLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -19,14 +20,17 @@ public abstract class StateActivity<BP extends DataPresenter, BM extends BaseMod
 
     private int bodyLayoutId;
     private StateFrameLayout stateFrameLayout;
+    private AppBarLayout appBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int headLayoutId = titleLayoutId();
         bodyLayoutId = bodyLayoutId(savedInstanceState);
-        if (headLayoutId != 0) {
-            ViewStub headViewStub = (ViewStub) findViewById(R.id.base_state_head);
+        appBar = (AppBarLayout) findViewById(R.id.app_bar);
+        ViewStub headViewStub = (ViewStub) findViewById(R.id.base_state_head);
+        if (headLayoutId != 0 && headViewStub != null) {
+            appBar.setVisibility(View.VISIBLE);
             headViewStub.setLayoutResource(titleLayoutId());
             headViewStub.inflate();
         }
