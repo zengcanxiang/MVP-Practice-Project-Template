@@ -59,79 +59,121 @@ public class SharePreUtil {
         return sp.getLong(key, 0);
     }
 
-    public static boolean putString(String key, String value) {
+    /**
+     * 同步的提交到硬件磁盘
+     */
+    public static boolean commitString(String key, String value) {
         Editor editor = sp.edit();
         editor.putString(key, value);
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("putStr失败");
-        }
+        Logger.e("commitStr结果：" + fruit);
         return fruit;
     }
 
-    public static boolean putInt(String key, int value) {
+    /**
+     * 同步的提交到硬件磁盘
+     */
+    public static boolean commitInt(String key, int value) {
         Editor editor = sp.edit();
         editor.putInt(key, value);
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("putInt失败");
-        }
+        Logger.e("commitInt：" + fruit);
         return fruit;
     }
 
-    public static boolean putLong(String key, Long value) {
+    /**
+     * 同步的提交到硬件磁盘
+     */
+    public static boolean commitLong(String key, Long value) {
         Editor editor = sp.edit();
         editor.putLong(key, value);
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("putLong失败");
-        }
+        Logger.e("commitLong：" + fruit);
         return fruit;
     }
 
-    public static boolean putBoolean(String key, boolean value) {
+    /**
+     * 同步的提交到硬件磁盘
+     */
+    public static boolean commitBoolean(String key, boolean value) {
         Editor editor = sp.edit();
         editor.putBoolean(key, value);
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("putBoolean失败");
-        }
+        Logger.e("commitBoolean：" + fruit);
         return fruit;
+    }
+
+    /**
+     * 同步的提交到硬件磁盘
+     */
+    public static boolean commitJSONObject(String key, Object value) {
+        String str = JSON.toJSONString(value);
+        return commitString(key, str);
+    }
+
+    public static <T> T getJSONObject(String key, Class<T> c) {
+        String json = sp.getString(key, "");
+        return JSON.parseObject(json, c);
+    }
+
+    /**
+     * 先提交到内存,异步保存到SharedPreferences文件中
+     */
+    public static void applyString(String key, String value) {
+        Editor editor = sp.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    /**
+     * 先提交到内存,异步保存到SharedPreferences文件中
+     */
+    public static void applyInt(String key, int value) {
+        Editor editor = sp.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    /**
+     * 先提交到内存,异步保存到SharedPreferences文件中
+     */
+    public static void applyLong(String key, Long value) {
+        Editor editor = sp.edit();
+        editor.putLong(key, value);
+        editor.apply();
+    }
+
+    /**
+     * 先提交到内存,异步保存到SharedPreferences文件中
+     */
+    public static void applyBoolean(String key, boolean value) {
+        Editor editor = sp.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    /**
+     * 先提交到内存,异步保存到SharedPreferences文件中
+     */
+    public static void applyJSONObject(String key, Object value) {
+        String str = JSON.toJSONString(value);
+        applyString(key, str);
     }
 
     public static boolean clear() {
         Editor editor = sp.edit();
         editor.clear();
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("clear失败");
-        }
+        Logger.e("clear：" + fruit);
         return fruit;
     }
+
 
     public static boolean delete(String key) {
         Editor editor = sp.edit();
         editor.remove(key);
         boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("delete失败");
-        }
+        Logger.e("delete：" + fruit);
         return fruit;
-    }
-
-    public static boolean putJSONObject(String key, Object value) {
-        String str = JSON.toJSONString(value);
-        Editor editor = sp.edit();
-        editor.putString(key, str);
-        boolean fruit = editor.commit();
-        if (!fruit) {
-            Logger.e("putObj失败");
-        }
-        return fruit;
-    }
-
-    public static <T> T getJSONObject(String key, Class<T> c) {
-        String json = sp.getString(key, "");
-        return JSON.parseObject(json, c);
     }
 }

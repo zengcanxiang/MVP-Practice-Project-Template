@@ -52,14 +52,6 @@ android {
         }
     }
 
-    productFlavors {
-        gankio {
-            applicationId 'cn.zengcanxiang.gankio'
-            minSdkVersion 21
-            resValue "string", "app_name", "gank即食"
-            buildConfigField "String", "APP_URL_GANKIO", "\"${cfg.app_url_gankIo}\""
-        }
-    }
     //运行时构建脚本
     android.applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -105,8 +97,4 @@ dependencies {
     }
     //加载dialog
     compile 'com.github.d-max:spots-dialog:0.7@aar'
-    //图片展示相关
-    gankioCompile 'com.commit451:PhotoView:1.2.4'
-    //搜索框
-    gankioCompile 'br.com.mauker.materialsearchview:materialsearchview:1.2.2'
 }

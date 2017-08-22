@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import cn.zengcanxiang.mvp_practice_project_template.BuildConfig;
-import cn.zengcanxiang.mvp_practice_project_template.bean.ResultBean;
+import cn.zengcanxiang.mvp_practice_project_template.bean.responses.ResultBean;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

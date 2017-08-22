@@ -25,7 +25,8 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
      */
     protected final void checkHide(int viewId, int showIndex) {
         List<Fragment> allFragment = bindFragment();
-        FragmentTransaction b = hideAllFrag(showIndex);
+        hideAllFrag(showIndex);
+        FragmentTransaction b = getSupportFragmentManager().beginTransaction();
         if (showIndex >= allFragment.size()) {
             Logger.e("showIndex >= allFragment.size()：showIndex=" + showIndex + ",allFragment.size()=" + allFragment.size());
             return;
@@ -35,6 +36,18 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
             b.add(viewId, fragment);
         }
         b.show(fragment);
+        b.commit();
+    }
+
+    protected final void checkReplac(int viewId, int showIndex) {
+        List<Fragment> allFragment = bindFragment();
+        FragmentTransaction b = getSupportFragmentManager().beginTransaction();
+        if (showIndex >= allFragment.size()) {
+            Logger.e("showIndex >= allFragment.size()：showIndex=" + showIndex + ",allFragment.size()=" + allFragment.size());
+            return;
+        }
+        Fragment fragment = allFragment.get(showIndex);
+        b.replace(viewId, fragment);
         b.commit();
     }
 
@@ -57,7 +70,7 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
     /**
      * hide所有fragment
      */
-    private FragmentTransaction hideAllFrag(int showIndex) {
+    protected void hideAllFrag(int showIndex) {
         List<Fragment> fragments = bindFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         for (int i = 0; i < fragments.size(); i++) {
@@ -66,8 +79,9 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
             }
             fragmentTransaction.hide(fragments.get(i));
         }
-        return fragmentTransaction;
+        fragmentTransaction.commit();
     }
+
 
     @Override
     public boolean isImmersive() {
