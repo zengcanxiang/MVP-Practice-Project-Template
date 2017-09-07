@@ -33,12 +33,6 @@ public abstract class DataListActivity<BP extends DataPresenter, BM extends Base
 
     @Override
     public final void initViews() {
-
-    }
-
-    @Override
-    protected void showBody() {
-        super.showBody();
         recyclerView = (RecyclerView) findViewById(R.id.base_fragment_data_list);
         refreshLayout = (TwinklingRefreshLayout) findViewById(R.id.base_fragment_data_refresh);
 
@@ -49,7 +43,17 @@ public abstract class DataListActivity<BP extends DataPresenter, BM extends Base
         refreshLayout.setMaxHeadHeight(240);
         refreshLayout.setFloatRefresh(true);
         refreshLayout.setAutoLoadMore(true);
+    }
 
+    @Override
+    protected void showBody() {
+        super.showBody();
+        recyclerView.setLayoutManager(bindManager());
+        recyclerView.setAdapter(bindAdapter());
+    }
+
+    @Override
+    public final void setViewsListener() {
         refreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
 
             @Override
@@ -64,13 +68,6 @@ public abstract class DataListActivity<BP extends DataPresenter, BM extends Base
                 loadMore();
             }
         });
-        recyclerView.setLayoutManager(bindManager());
-        recyclerView.setAdapter(bindAdapter());
-    }
-
-    @Override
-    public final void setViewsListener() {
-
     }
 
     /**

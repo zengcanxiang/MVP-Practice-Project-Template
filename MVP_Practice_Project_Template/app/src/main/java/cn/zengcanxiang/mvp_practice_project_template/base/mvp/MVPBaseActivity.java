@@ -73,7 +73,7 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
     }
 
     @Override
-    public final void initActivityWritCode() {
+    public void initActivityWritCode() {
         initViews();
         disposeBusiness();
         setViewsListener();

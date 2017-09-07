@@ -16,21 +16,23 @@ import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BaseModel;
  *
  * @param <BP> 一般需要请求数据的才需要显示不同的状态布局，所以规定是DataPresenter
  */
-public abstract class StateFragment<BP extends DataPresenter, BM extends BaseModel> extends DataFragment<BP, BM> implements StateFrameLayout.OnAllStateClickListener {
+public abstract class StateFragment<BP extends DataPresenter, BM extends BaseModel> extends DataFragment<BP, BM>
+        implements StateFrameLayout.OnAllStateClickListener {
+    
     private int bodyLayoutId;
     private StateFrameLayout stateFrameLayout;
-    private AppBarLayout appBar;
+    protected AppBarLayout appBar;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        int headLayoutId = titleLayoutId();
+        int headLayoutId = headLayoutId();
         bodyLayoutId = bodyLayoutId(savedInstanceState);
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
         ViewStub headViewStub = (ViewStub) findViewById(R.id.base_state_head);
         if (headLayoutId != 0 && headViewStub != null) {
             appBar.setVisibility(View.VISIBLE);
-            headViewStub.setLayoutResource(titleLayoutId());
+            headViewStub.setLayoutResource(headLayoutId());
             headViewStub.inflate();
         }
 
@@ -39,13 +41,12 @@ public abstract class StateFragment<BP extends DataPresenter, BM extends BaseMod
             stateFrameLayout.setStateViews(bindLoadView(), bindErrorView(), bindEmptyView());
             stateFrameLayout.setOnStateClickListener(this);
         }
-        disposeBusiness();
+        initActivityWritCode();
     }
 
     @Override
-    public void initActivityWritCode() {
-        initViews();
-        setViewsListener();
+    public final void initActivityWritCode() {
+        disposeBusiness();
     }
 
     @Override
@@ -61,6 +62,8 @@ public abstract class StateFragment<BP extends DataPresenter, BM extends BaseMod
             bodyViewStub.inflate();
             bodyLayoutId = 0;
         }
+        initViews();
+        setViewsListener();
     }
 
     @Override
@@ -141,7 +144,7 @@ public abstract class StateFragment<BP extends DataPresenter, BM extends BaseMod
      */
     public abstract
     @LayoutRes
-    int titleLayoutId();
+    int headLayoutId();
 
     @Override
     public void onNormalClick(StateFrameLayout layout) {

@@ -18,19 +18,20 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
     /**
      * 不要在该方法内初始化fragment
      */
-    public abstract List<Fragment> bindFragment();
+    public abstract List<? extends Fragment> bindFragment();
 
     /**
      * 切换fragment(隐藏)
      */
     protected final void checkHide(int viewId, int showIndex) {
-        List<Fragment> allFragment = bindFragment();
-        FragmentTransaction b = hideAllFrag(showIndex);
+        List allFragment = bindFragment();
+        hideAllFrag(showIndex);
+        FragmentTransaction b = getSupportFragmentManager().beginTransaction();
         if (showIndex >= allFragment.size()) {
             Logger.e("showIndex >= allFragment.size()：showIndex=" + showIndex + ",allFragment.size()=" + allFragment.size());
             return;
         }
-        Fragment fragment = allFragment.get(showIndex);
+        Fragment fragment = (Fragment) allFragment.get(showIndex);
         if (!fragment.isAdded()) {
             b.add(viewId, fragment);
         }
@@ -38,18 +39,30 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
         b.commit();
     }
 
+    protected final void checkReplac(int viewId, int showIndex) {
+        List allFragment = bindFragment();
+        FragmentTransaction b = getSupportFragmentManager().beginTransaction();
+        if (showIndex >= allFragment.size()) {
+            Logger.e("showIndex >= allFragment.size()：showIndex=" + showIndex + ",allFragment.size()=" + allFragment.size());
+            return;
+        }
+        Fragment fragment = (Fragment) allFragment.get(showIndex);
+        b.replace(viewId, fragment);
+        b.commit();
+    }
+
     /**
      * remove所有fragment
      */
     private FragmentTransaction removeAllFrag(int showIndex) {
-        List<Fragment> allFragment = bindFragment();
+        List allFragment = bindFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         for (int i = 0; i < allFragment.size(); i++) {
             if (i == showIndex) {
                 Logger.e("showIndex >= allFragment.size()：showIndex=" + showIndex + ",allFragment.size()=" + allFragment.size());
                 continue;
             }
-            fragmentTransaction.remove(allFragment.get(i));
+            fragmentTransaction.remove((Fragment) allFragment.get(i));
         }
         return fragmentTransaction;
     }
@@ -57,16 +70,16 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
     /**
      * hide所有fragment
      */
-    private FragmentTransaction hideAllFrag(int showIndex) {
-        List<Fragment> fragments = bindFragment();
+    protected void hideAllFrag(int showIndex) {
+        List fragments = bindFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         for (int i = 0; i < fragments.size(); i++) {
             if (i == showIndex) {
                 continue;
             }
-            fragmentTransaction.hide(fragments.get(i));
+            fragmentTransaction.hide((Fragment) fragments.get(i));
         }
-        return fragmentTransaction;
+        fragmentTransaction.commit();
     }
 
     @Override

@@ -19,7 +19,8 @@ public abstract class DataActivity<BP extends DataPresenter, BM extends BaseMode
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.onDestroy();
+        if (mPresenter != null)
+            mPresenter.onDestroy();
     }
 
     @Override

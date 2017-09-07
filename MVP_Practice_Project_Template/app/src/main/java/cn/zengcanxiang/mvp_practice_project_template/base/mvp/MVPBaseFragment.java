@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kelin.translucentbar.library.TranslucentBarManager;
+
 import cn.zengcanxiang.mvp_practice_project_template.BuildConfig;
+import cn.zengcanxiang.mvp_practice_project_template.R;
 import cn.zengcanxiang.mvp_practice_project_template.base.UIWithCode;
 
 
@@ -45,6 +48,11 @@ public abstract class MVPBaseFragment<BP extends BasePresent, BM extends BaseMod
             if (parent != null) {
                 parent.removeView(mContentView);
             }
+        }
+        if (isImmersed()) {
+            TranslucentBarManager barManager = new TranslucentBarManager(this);
+            barManager.transparent(this, mContentView, R.color.colorPrimary);
+
         }
         return mContentView;
     }
@@ -83,5 +91,9 @@ public abstract class MVPBaseFragment<BP extends BasePresent, BM extends BaseMod
             v = new View(mContext);
         }
         return v;
+    }
+
+    public boolean isImmersed() {
+        return false;
     }
 }
