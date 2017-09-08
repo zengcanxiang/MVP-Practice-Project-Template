@@ -18,7 +18,7 @@ import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BaseModel;
  */
 public abstract class StateFragment<BP extends DataPresenter, BM extends BaseModel> extends DataFragment<BP, BM>
         implements StateFrameLayout.OnAllStateClickListener {
-    
+
     private int bodyLayoutId;
     private StateFrameLayout stateFrameLayout;
     protected AppBarLayout appBar;
@@ -41,12 +41,11 @@ public abstract class StateFragment<BP extends DataPresenter, BM extends BaseMod
             stateFrameLayout.setStateViews(bindLoadView(), bindErrorView(), bindEmptyView());
             stateFrameLayout.setOnStateClickListener(this);
         }
-        initActivityWritCode();
+        disposeBusiness();
     }
 
     @Override
     public final void initActivityWritCode() {
-        disposeBusiness();
     }
 
     @Override

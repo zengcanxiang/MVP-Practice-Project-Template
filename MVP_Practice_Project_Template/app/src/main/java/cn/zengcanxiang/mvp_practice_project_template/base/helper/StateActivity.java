@@ -41,12 +41,11 @@ public abstract class StateActivity<BP extends DataPresenter, BM extends BaseMod
             stateFrameLayout.setStateViews(bindLoadView(), bindErrorView(), bindEmptyView());
             stateFrameLayout.setOnStateClickListener(this);
         }
-        initActivityWritCode();
+        disposeBusiness();
     }
 
     @Override
     public final void initActivityWritCode() {
-        disposeBusiness();
     }
 
     @Override
