@@ -6,16 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.kelin.translucentbar.library.TranslucentBarManager;
 
@@ -23,7 +20,6 @@ import cn.zengcanxiang.mvp_practice_project_template.BuildConfig;
 import cn.zengcanxiang.mvp_practice_project_template.R;
 import cn.zengcanxiang.mvp_practice_project_template.base.UIWithCode;
 import cn.zengcanxiang.mvp_practice_project_template.util.AppManager;
-import cn.zengcanxiang.mvp_practice_project_template.util.KeyboardUtils;
 
 /**
  * baseActivity
@@ -94,9 +90,31 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             //点击空白处隐藏键盘
             View v = getCurrentFocus();
+            //点击坐标是否在当前焦点的view的之外
             if (isShouldHideKeyboard(v, ev)) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                //是否是点击不隐藏输入法的view
+                if (isTouchView(filterViewByIds(), ev)) {
+                    return super.dispatchTouchEvent(ev);
+                }
+                //是否有需要处理的edit_view
+                if (hideSoftByEditViewIds() == null || hideSoftByEditViewIds().length == 0) {
+                    //没有需要处理的view，但是上面判断出点击是在当前焦点view之外，也就是点击空白处，隐藏输入法
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    v.clearFocus();
+                    return super.dispatchTouchEvent(ev);
+                }
+                if (isFocusEditText(v, hideSoftByEditViewIds())) {
+                    //如果是,判断是否是点击其他不隐藏输入法的edit_view
+                    if (isTouchView(hideSoftByEditViewIds(), ev)) {
+                        return super.dispatchTouchEvent(ev);
+                    } else {
+                        //如果不是,隐藏输入法
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        v.clearFocus();
+                    }
+                }
             }
             //防止快速的连续点击同一个按钮
             if (isFastClick()) {
@@ -106,6 +124,83 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
         return super.dispatchTouchEvent(ev);
     }
 
+
+    /**
+     * 是否触摸在要处理的editText
+     */
+    private boolean isFocusEditText(View v, int... ids) {
+        if (v instanceof EditText) {
+            EditText tmp_et = (EditText) v;
+            for (int id : ids) {
+                if (tmp_et.getId() == id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否触摸在过滤的view上面
+     */
+    private boolean isTouchView(View[] views, MotionEvent ev) {
+        //如果点击的坐标不是需要处理的，就不管
+        if (views == null || views.length == 0) return false;
+        int[] location = new int[2];
+        for (View view : views) {
+            view.getLocationOnScreen(location);
+            int x = location[0];
+            int y = location[1];
+            if (ev.getX() > x && ev.getX() < (x + view.getWidth())
+                    && ev.getY() > y && ev.getY() < (y + view.getHeight())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否触摸在过滤的view上面
+     */
+    private boolean isTouchView(int[] ids, MotionEvent ev) {
+        int[] location = new int[2];
+        for (int id : ids) {
+            View view = findViewById(id);
+            if (view == null) continue;
+            view.getLocationOnScreen(location);
+            int x = location[0];
+            int y = location[1];
+            if (ev.getX() > x && ev.getX() < (x + view.getWidth())
+                    && ev.getY() > y && ev.getY() < (y + view.getHeight())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 传入EditText的Id
+     * 没有传入的EditText不做处理
+     *
+     * @return id 数组
+     */
+    protected int[] hideSoftByEditViewIds() {
+        return null;
+    }
+
+    /**
+     * 传入要过滤的View
+     * 过滤之后点击将不会有隐藏软键盘的操作
+     *
+     * @return id 数组
+     */
+    protected View[] filterViewByIds() {
+        return null;
+    }
+
+    /**
+     * 处理短时间多次点击
+     */
     private synchronized static boolean isFastClick() {
         long time = System.currentTimeMillis();
         if (time - lastClickTime < 500) {
@@ -115,70 +210,21 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
         return false;
     }
 
-    protected final void title(@StringRes int titleValueStrId) {
-        title(getString(titleValueStrId));
-    }
-
-    @SuppressWarnings("all")
-    protected final void title(String titleValue) {
-        TextView title = (TextView) findViewById(R.id.ig_title);
-        title.setText(titleValue);
-    }
-
-    protected final void menu(@StringRes int menuValueStrId) {
-        menu(getString(menuValueStrId));
-    }
-
-    @SuppressWarnings("all")
-    protected final void menu(String menuValue) {
-        TextView title = (TextView) findViewById(R.id.title_menu);
-        title.setText(menuValue);
-    }
-
-    @SuppressWarnings("all")
-    protected final void backLick(@IdRes int backViewId) {
-        final View backView = findViewById(backViewId);
-        backView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                KeyboardUtils.hideSoftInput(mContext);
-                backView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                }, 50);
-            }
-        });
-    }
-
-    protected final void backLick() {
-        backLick(R.id.title_back);
-    }
-
-    @SuppressWarnings("all")
-    protected final void visibilityView(@IdRes int viewId, int visibility) {
-        findViewById(viewId).setVisibility(visibility);
-    }
-
-    protected final void hideBack(boolean isHide) {
-        visibilityView(R.id.title_back, isHide ? View.GONE : View.VISIBLE);
-    }
-
-    protected final void hideBack(@IdRes int backId, boolean isHide) {
-        visibilityView(backId, isHide ? View.GONE : View.VISIBLE);
-    }
-
-    protected final void hideMenu(boolean isHide) {
-        visibilityView(R.id.title_menu, isHide ? View.GONE : View.VISIBLE);
-    }
-
-    protected final void hideMenu(@IdRes int menuId, boolean isHide) {
-        visibilityView(menuId, isHide ? View.GONE : View.VISIBLE);
-    }
-
-    public final int getColorByRes(@ColorRes int colorId) {
-        return ContextCompat.getColor(mContext, colorId);
+    /**
+     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘
+     */
+    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] l = {0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0],
+                    top = l[1],
+                    bottom = top + v.getHeight(),
+                    right = left + v.getWidth();
+            return !(event.getX() > left && event.getX() < right
+                    && event.getY() > top && event.getY() < bottom);
+        }
+        return false;
     }
 
     public final String format(@StringRes int strId, Object... value) {
@@ -197,23 +243,6 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
     protected void startActivity(Class clz) {
         Intent intent = new Intent(this, clz);
         startActivity(intent);
-    }
-
-    /**
-     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘
-     */
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {
-            int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            int left = l[0],
-                    top = l[1],
-                    bottom = top + v.getHeight(),
-                    right = left + v.getWidth();
-            return !(event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom);
-        }
-        return false;
     }
 
     public boolean isImmersed() {
