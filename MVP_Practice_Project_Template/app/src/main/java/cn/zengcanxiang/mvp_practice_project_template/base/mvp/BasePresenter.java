@@ -1,7 +1,7 @@
 package cn.zengcanxiang.mvp_practice_project_template.base.mvp;
 
 
-public abstract class BasePresent<BM extends BaseModel, BV extends BaseView> {
+public abstract class BasePresenter<BM extends BaseModel, BV extends BaseView> {
     protected BM mModel;
     protected BV mView;
 

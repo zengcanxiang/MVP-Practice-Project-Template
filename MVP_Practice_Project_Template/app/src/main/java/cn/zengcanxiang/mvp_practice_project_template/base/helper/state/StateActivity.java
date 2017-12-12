@@ -1,7 +1,6 @@
-package cn.zengcanxiang.mvp_practice_project_template.base.helper;
+package cn.zengcanxiang.mvp_practice_project_template.base.helper.state;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.design.widget.AppBarLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,43 +8,47 @@ import android.view.ViewStub;
 
 import am.widget.stateframelayout.StateFrameLayout;
 import cn.zengcanxiang.mvp_practice_project_template.R;
+import cn.zengcanxiang.mvp_practice_project_template.base.helper.DataActivity;
+import cn.zengcanxiang.mvp_practice_project_template.base.helper.DataPresenter;
 import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BaseModel;
 
-/**
- * 带状态布局的Activity
- *
- * @param <BP> 一般需要请求数据的才需要显示不同的状态布局，所以规定是DataPresenter
- */
 public abstract class StateActivity<BP extends DataPresenter, BM extends BaseModel> extends DataActivity<BP, BM>
-        implements StateFrameLayout.OnAllStateClickListener {
+        implements StateFrameLayout.OnAllStateClickListener, StateInterface {
 
     private int bodyLayoutId;
     private StateFrameLayout stateFrameLayout;
-    private AppBarLayout appBar;
+    protected AppBarLayout appBar;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public final void initActivityWritCode() {
+    }
+
+    @Override
+    public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int headLayoutId = headLayoutId();
-        bodyLayoutId = bodyLayoutId(savedInstanceState);
+        bodyLayoutId = bindContentLayoutId(savedInstanceState);
+        initHeadView();
+        initState();
+        disposeBusiness();
+    }
+
+    private void initHeadView() {
+        int headLayoutId = bindHeadLayoutId();
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
         ViewStub headViewStub = (ViewStub) findViewById(R.id.base_state_head);
         if (headLayoutId != 0 && headViewStub != null) {
             appBar.setVisibility(View.VISIBLE);
-            headViewStub.setLayoutResource(headLayoutId());
+            headViewStub.setLayoutResource(headLayoutId);
             headViewStub.inflate();
         }
+    }
 
+    private void initState() {
         if (isOpenPageManager()) {
             stateFrameLayout = (StateFrameLayout) findViewById(R.id.base_state_layout);
             stateFrameLayout.setStateViews(bindLoadView(), bindErrorView(), bindEmptyView());
             stateFrameLayout.setOnStateClickListener(this);
         }
-        disposeBusiness();
-    }
-
-    @Override
-    public final void initActivityWritCode() {
     }
 
     @Override
@@ -91,59 +94,56 @@ public abstract class StateActivity<BP extends DataPresenter, BM extends BaseMod
         showErrorView();
     }
 
-    protected void showLoadView() {
+
+    @Override
+    public void showLoadView() {
         if (stateFrameLayout != null)
             stateFrameLayout.loading();
     }
 
-    protected void showErrorView() {
+
+    @Override
+    public void showErrorView() {
         if (stateFrameLayout != null)
             stateFrameLayout.error();
-
     }
 
-    protected void showEmptyView() {
+
+    @Override
+    public void showEmptyView() {
         if (stateFrameLayout != null)
             stateFrameLayout.empty();
     }
 
-    protected void showContentView() {
+
+    @Override
+    public void showContentView() {
         if (stateFrameLayout != null)
             stateFrameLayout.normal();
     }
 
-    protected View bindLoadView() {
+
+    @Override
+    public View bindLoadView() {
         return LayoutInflater.from(mContext).inflate(R.layout.pager_loading, stateFrameLayout, false);
     }
 
-    protected View bindEmptyView() {
+
+    @Override
+    public View bindEmptyView() {
         return LayoutInflater.from(mContext).inflate(R.layout.pager_empty, stateFrameLayout, false);
     }
 
-    protected View bindErrorView() {
+
+    @Override
+    public View bindErrorView() {
         return LayoutInflater.from(mContext).inflate(R.layout.pager_error, stateFrameLayout, false);
     }
 
-    /**
-     * 是否开启界面处理,默认开启
-     */
-    protected boolean isOpenPageManager() {
+    @Override
+    public boolean isOpenPageManager() {
         return true;
     }
-
-    /**
-     * 内容区域布局Id
-     */
-    public abstract
-    @LayoutRes
-    int bodyLayoutId(Bundle savedInstanceState);
-
-    /**
-     * 标题栏布局Id
-     */
-    public abstract
-    @LayoutRes
-    int headLayoutId();
 
     @Override
     public void onNormalClick(StateFrameLayout layout) {
@@ -151,6 +151,5 @@ public abstract class StateActivity<BP extends DataPresenter, BM extends BaseMod
 
     @Override
     public void onLoadingClick(StateFrameLayout layout) {
-
     }
 }

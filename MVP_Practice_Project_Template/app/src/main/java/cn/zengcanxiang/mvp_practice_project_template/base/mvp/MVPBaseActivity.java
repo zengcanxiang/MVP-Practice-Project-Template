@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
@@ -24,7 +23,7 @@ import cn.zengcanxiang.mvp_practice_project_template.util.AppManager;
 /**
  * baseActivity
  */
-public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseModel> extends AppCompatActivity
+public abstract class MVPBaseActivity<BP extends BasePresenter, BM extends BaseModel> extends AppCompatActivity
         implements BaseView, UIWithCode {
     public BP mPresenter;
     protected Activity mContext;
@@ -48,8 +47,6 @@ public abstract class MVPBaseActivity<BP extends BasePresent, BM extends BaseMod
             BM mModel = ClassUtil.getT(this, 1);
             mPresenter.setVM(this, mModel);
         }
-        //强制不横屏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         AppManager.getAppManager().addActivity(this);
         int layoutId = initLayout(savedInstanceState);
         if (layoutId != 0) {

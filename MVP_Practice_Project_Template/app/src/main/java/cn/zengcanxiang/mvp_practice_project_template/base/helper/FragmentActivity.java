@@ -8,13 +8,10 @@ import com.orhanobut.logger.Logger;
 import java.util.List;
 
 import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BaseModel;
-import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BasePresent;
+import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BasePresenter;
 import cn.zengcanxiang.mvp_practice_project_template.base.mvp.MVPBaseActivity;
 
-/**
- * 提供简便的对fragment和Activity之间相互操作Activity，暂时不是很完善
- */
-public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseModel> extends MVPBaseActivity<BP, BM> {
+public abstract class FragmentActivity<BP extends BasePresenter, BM extends BaseModel> extends MVPBaseActivity<BP, BM> {
     /**
      * 不要在该方法内初始化fragment
      */
@@ -83,7 +80,7 @@ public abstract class FragmentActivity<BP extends BasePresent, BM extends BaseMo
     }
 
     @Override
-    public boolean isImmersive() {
+    public boolean isImmersed() {
         return false;
     }
 }

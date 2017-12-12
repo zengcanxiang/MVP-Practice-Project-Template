@@ -9,12 +9,12 @@ import java.util.Stack;
  */
 public final class AppManager {
 
-    private static Stack<Activity> activityStack;
+    private static Stack<Activity> activityStack = new Stack<>();
 
     private AppManager() {
     }
 
-    static class App {
+    private static class App {
         private static AppManager appManager = new AppManager();
     }
 
@@ -29,9 +29,6 @@ public final class AppManager {
      * 添加Activity到堆栈
      */
     public void addActivity(Activity activity) {
-        if (activityStack == null) {
-            activityStack = new Stack<>();
-        }
         activityStack.add(activity);
     }
 
@@ -47,7 +44,7 @@ public final class AppManager {
      * 结束当前Activity（堆栈中最后一个压入的）
      */
     public void finshActivity() {
-        Activity activity = activityStack.lastElement();
+        Activity activity = currentActivity();
         removeActivity(activity);
     }
 
@@ -56,10 +53,9 @@ public final class AppManager {
      */
     public void removeActivity(Activity activity) {
         if (activity != null) {
-            activity.finish();
             activityStack.remove(activity);
+            activity.finish();
         }
-        activity = null;
     }
 
     /**
@@ -90,12 +86,11 @@ public final class AppManager {
      * 获取指定的Activity
      */
     public Activity getActivity(Class<?> cls) {
-        if (activityStack != null)
-            for (Activity activity : activityStack) {
-                if (activity.getClass().equals(cls)) {
-                    return activity;
-                }
+        for (Activity activity : activityStack) {
+            if (activity.getClass().equals(cls)) {
+                return activity;
             }
+        }
         return null;
     }
 
@@ -114,7 +109,7 @@ public final class AppManager {
     }
 
     /**
-     * 请求所有保存的数据
+     * 清空所有保存的数据
      */
     public void clear() {
         activityStack.clear();

@@ -1,4 +1,4 @@
-package cn.zengcanxiang.mvp_practice_project_template.base.helper;
+package cn.zengcanxiang.mvp_practice_project_template.base.helper.multitype;
 
 import android.support.annotation.DrawableRes;
 
@@ -9,17 +9,61 @@ import cn.zengcanxiang.mvp_practice_project_template.R;
  * 标题+viewPager 组合相关属性自由构建器
  */
 public class MultiTypeBuilder {
-
+    /**
+     * 标题是否绝对平分
+     */
     private boolean isAdjustMode = false;
+    /**
+     * 是否显示分割线
+     */
     private boolean isShowCutOffRule = true;
+    /**
+     * 是否可以滑动
+     */
+    private boolean isScroll = true;
+    /**
+     * 分割线颜色
+     */
+    private int cutOffRuleColor;
+    /**
+     * 标题文字之间的距离
+     */
     private int intrinsicWidth = 15;
+    /**
+     * 标题栏高度
+     */
     private int titleViewHeight = 38;
-    private int titleViewMarginsLeft = 5, titleViewMarginsRight = 0, titleViewMarginsTop = 0, titleViewMarginsBottom = 0;
+    /**
+     * 标题栏的margin距离
+     */
+    private int headViewMarginsLeft = 5, headViewMarginsRight = 0, headViewMarginsTop = 0, headViewMarginsBottom = 0;
+    /**
+     * 标题栏引导条颜色
+     */
     private int indicatorColor = R.color.colorAccent;
-    private int titleViewValueSize = 15;
+    /**
+     * 标题文字大小
+     */
+    private int headViewValueSize = 15;
+    /**
+     * 标题未选中颜色
+     */
     private int multiTypeNormalColor;
+    /**
+     * 标题选中颜色
+     */
     private int multiTypeSelectedColor = R.color.colorAccent;
+    /**
+     * 标题栏背景颜色
+     */
     private int multiTypeBgColor;
+    /**
+     * 主体部分背景颜色
+     */
+    private int multiTypeBodyBgColor;
+    /**
+     * viewPager缓存页面个数
+     */
     private int screenPageLimit = 1;
 
     public MultiTypeBuilder(int normalColor, int bgColor) {
@@ -38,6 +82,14 @@ public class MultiTypeBuilder {
     }
 
     /**
+     * 设置是否可以滑动
+     */
+    public MultiTypeBuilder isScroll(boolean isScroll) {
+        this.isScroll = isScroll;
+        return this;
+    }
+
+    /**
      * 设置是否平分屏幕(不超出屏幕)
      */
     public MultiTypeBuilder isAdjustMode(boolean isAdjustMode) {
@@ -46,10 +98,20 @@ public class MultiTypeBuilder {
     }
 
     /**
-     * 是否显示标题与下方的分割线
+     * 设置是否显示标题与下方的分割线
      */
     public MultiTypeBuilder isShowCutOffRule(boolean isShowCutOffRule) {
         this.isShowCutOffRule = isShowCutOffRule;
+        return this;
+    }
+
+    /**
+     * 设置分割线颜色
+     *
+     * @param cutOffRuleColor colorId
+     */
+    public MultiTypeBuilder setCutOffRuleColor(@DrawableRes int cutOffRuleColor) {
+        this.cutOffRuleColor = cutOffRuleColor;
         return this;
     }
 
@@ -77,18 +139,18 @@ public class MultiTypeBuilder {
      * 设置标题栏的margin距离
      */
     public MultiTypeBuilder setTitleViewMargins(int left, int top, int right, int bottom) {
-        this.titleViewMarginsLeft = left;
-        this.titleViewMarginsTop = top;
-        this.titleViewMarginsRight = right;
-        this.titleViewMarginsBottom = bottom;
+        this.headViewMarginsLeft = left;
+        this.headViewMarginsTop = top;
+        this.headViewMarginsRight = right;
+        this.headViewMarginsBottom = bottom;
         return this;
     }
 
     /**
      * 设置标题栏的文字大小
      */
-    public MultiTypeBuilder setTitleViewValueSize(int titleViewValueSize) {
-        this.titleViewValueSize = titleViewValueSize;
+    public MultiTypeBuilder setHeadViewValueSize(int headViewValueSize) {
+        this.headViewValueSize = headViewValueSize;
         return this;
     }
 
@@ -123,11 +185,33 @@ public class MultiTypeBuilder {
     }
 
     /**
+     * 设置标题栏背景颜色
+     *
+     * @param multiTypeBodyBgColor colorId
+     */
+    public MultiTypeBuilder setMultiTypeBodyBgColor(@DrawableRes int multiTypeBodyBgColor) {
+        this.multiTypeBodyBgColor = multiTypeBodyBgColor;
+        return this;
+    }
+
+    /**
      * 设置viewPager缓存页面个数
      */
     public MultiTypeBuilder setScreenPageLimit(int screenPageLimit) {
         this.screenPageLimit = screenPageLimit;
         return this;
+    }
+
+    public boolean isScroll() {
+        return isScroll;
+    }
+
+    public int getCutOffRuleColor() {
+        return cutOffRuleColor;
+    }
+
+    public int getMultiTypeBodyBgColor() {
+        return multiTypeBodyBgColor;
     }
 
     public boolean isAdjustMode() {
@@ -150,8 +234,8 @@ public class MultiTypeBuilder {
         return titleViewHeight;
     }
 
-    public int getTitleViewValueSize() {
-        return titleViewValueSize;
+    public int getHeadViewValueSize() {
+        return headViewValueSize;
     }
 
     public int getMultiTypeNormalColor() {
@@ -166,20 +250,20 @@ public class MultiTypeBuilder {
         return multiTypeBgColor;
     }
 
-    public int getTitleViewMarginsLeft() {
-        return titleViewMarginsLeft;
+    public int getHeadViewMarginsLeft() {
+        return headViewMarginsLeft;
     }
 
-    public int getTitleViewMarginsRight() {
-        return titleViewMarginsRight;
+    public int getHeadViewMarginsRight() {
+        return headViewMarginsRight;
     }
 
-    public int getTitleViewMarginsTop() {
-        return titleViewMarginsTop;
+    public int getHeadViewMarginsTop() {
+        return headViewMarginsTop;
     }
 
-    public int getTitleViewMarginsBottom() {
-        return titleViewMarginsBottom;
+    public int getHeadViewMarginsBottom() {
+        return headViewMarginsBottom;
     }
 
     public int getScreenPageLimit() {

@@ -7,17 +7,17 @@ import cn.zengcanxiang.mvp_practice_project_template.base.mvp.MVPBaseFragment;
 import cn.zengcanxiang.mvp_practice_project_template.util.ToastUtils;
 import dmax.dialog.SpotsDialog;
 
+
 /**
  * 提供默认的数据获取等待dialog
  */
-public abstract class DataFragment<BP extends DataPresenter, BM extends BaseModel> extends MVPBaseFragment<BP, BM>
-        implements DataView {
+public abstract class DataFragment<BP extends DataPresenter, BM extends BaseModel> extends MVPBaseFragment<BP, BM> implements DataView {
     private Dialog mDialog;
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null)
+        if (mPresenter!=null)
             mPresenter.onDestroy();
     }
 

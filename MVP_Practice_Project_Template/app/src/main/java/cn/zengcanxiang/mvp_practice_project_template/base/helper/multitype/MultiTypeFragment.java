@@ -1,4 +1,4 @@
-package cn.zengcanxiang.mvp_practice_project_template.base.helper;
+package cn.zengcanxiang.mvp_practice_project_template.base.helper.multitype;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -27,8 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.zengcanxiang.mvp_practice_project_template.R;
+import cn.zengcanxiang.mvp_practice_project_template.base.helper.DataPresenter;
+import cn.zengcanxiang.mvp_practice_project_template.base.helper.state.StateFragment;
 import cn.zengcanxiang.mvp_practice_project_template.base.mvp.BaseModel;
 
+/**
+ * 包含多(标题+布局)的界面
+ */
 public abstract class MultiTypeFragment<BP extends DataPresenter, BM extends BaseModel> extends StateFragment<BP, BM> {
 
     private LinearLayout magicIndicatorParent;
@@ -45,7 +50,7 @@ public abstract class MultiTypeFragment<BP extends DataPresenter, BM extends Bas
     private MultiTypeBuilder builder;
 
     @Override
-    public int bodyLayoutId(Bundle savedInstanceState) {
+    public int bindContentLayoutId(Bundle savedInstanceState) {
         return R.layout.base_state_multi_type_body;
     }
 
@@ -64,10 +69,10 @@ public abstract class MultiTypeFragment<BP extends DataPresenter, BM extends Bas
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 UIUtil.dip2px(mContext, builder.getTitleViewHeight()));
-        layoutParams.setMargins(UIUtil.dip2px(mContext, builder.getTitleViewMarginsLeft()),
-                UIUtil.dip2px(mContext, builder.getTitleViewMarginsTop()),
-                UIUtil.dip2px(mContext, builder.getTitleViewMarginsRight()),
-                UIUtil.dip2px(mContext, builder.getTitleViewMarginsBottom()));
+        layoutParams.setMargins(UIUtil.dip2px(mContext, builder.getHeadViewMarginsLeft()),
+                UIUtil.dip2px(mContext, builder.getHeadViewMarginsTop()),
+                UIUtil.dip2px(mContext, builder.getHeadViewMarginsRight()),
+                UIUtil.dip2px(mContext, builder.getHeadViewMarginsBottom()));
         magicIndicator.setLayoutParams(layoutParams);
         magicIndicator.requestLayout();
 
@@ -88,7 +93,7 @@ public abstract class MultiTypeFragment<BP extends DataPresenter, BM extends Bas
                 //修改文本view
                 SimplePagerTitleView simplePagerTitleView = new SimplePagerTitleView(context);
                 simplePagerTitleView.setText(titleData.get(index));
-                simplePagerTitleView.setTextSize(builder.getTitleViewValueSize());
+                simplePagerTitleView.setTextSize(builder.getHeadViewValueSize());
                 simplePagerTitleView.setNormalColor(ContextCompat.getColor(mContext, builder.getMultiTypeNormalColor()));
                 simplePagerTitleView.setSelectedColor(ContextCompat.getColor(mContext, builder.getMultiTypeSelectedColor()));
 

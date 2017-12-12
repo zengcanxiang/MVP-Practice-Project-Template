@@ -75,7 +75,7 @@ public class DataHelper {
     /**
      * 清除Shareprefrence
      */
-    public static void clearShareprefrence(Context context) {
+    public static void clearSF(Context context) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
@@ -85,7 +85,7 @@ public class DataHelper {
     /**
      * 将对象储存到sharepreference
      */
-    public static <T> boolean saveDeviceData(Context context, String key, T device) {
+    public static <T> boolean saveObjToSF(Context context, String key, T device) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
@@ -109,7 +109,7 @@ public class DataHelper {
     /**
      * 将对象从shareprerence中取出来
      */
-    public static <T> T getDeviceData(Context context, String key) {
+    public static <T> T getObjForSF(Context context, String key) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         }
@@ -217,7 +217,9 @@ public class DataHelper {
         return true;
     }
 
-
+    /**
+     * byte字节数组转str
+     */
     public static String byteToString(InputStream in) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] buf = new byte[1024];

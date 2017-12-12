@@ -1,7 +1,10 @@
 package cn.zengcanxiang.mvp_practice_project_template.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
+
+import com.orhanobut.logger.Logger;
 
 import es.dmoral.toasty.Toasty;
 
@@ -20,13 +23,28 @@ public class ToastUtils {
         show(context, text, Toast.LENGTH_SHORT);
     }
 
-    public static void show(Context context, CharSequence text, int duration) {
+    public static void show(final Context context, final CharSequence text, final int duration) {
         if (t != null) {
             t.cancel();
         }
-        //防止内存泄露，静态Toast使用application
-        t = Toasty.normal(context.getApplicationContext(), text, duration);
-        t.show();
+        Activity activity = AppManager.getAppManager().currentActivity();
+        if (activity == null) {
+            try {
+                t = Toasty.normal(context, text, duration);
+                t.show();
+            } catch (Exception e) {
+                Logger.e("Activity is not null,show toast try error");
+            }
+            return;
+        }
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //防止内存泄露，静态Toast使用application
+                t = Toasty.normal(context.getApplicationContext(), text, duration);
+                t.show();
+            }
+        });
     }
 
     public static void show(Context context, int resId, Object... args) {

@@ -19,7 +19,7 @@ import cn.zengcanxiang.mvp_practice_project_template.R;
 import cn.zengcanxiang.mvp_practice_project_template.base.UIWithCode;
 
 
-public abstract class MVPBaseFragment<BP extends BasePresent, BM extends BaseModel> extends Fragment
+public abstract class MVPBaseFragment<BP extends BasePresenter, BM extends BaseModel> extends Fragment
         implements BaseView, UIWithCode {
     public BP mPresenter;
     protected AppCompatActivity mContext;
