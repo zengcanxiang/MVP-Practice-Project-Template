@@ -57,7 +57,7 @@ public class LoadMoreFooterView extends FrameLayout implements RefreshFooter {
     @NonNull
     @Override
     public View getView() {
-        return null;
+        return this;
     }
 
     @Override
